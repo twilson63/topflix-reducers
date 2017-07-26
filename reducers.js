@@ -4,20 +4,7 @@ const { append, assoc, compose } = R
 import cuid from 'cuid'
 
 const app = (state={title: 'Favorite Movies'}, action) => state
-const movies = (state=defaultMovies(), action) => {
-  switch (action.type) {
-    case 'ADD_MOVIE':
-      return append(
-        compose(
-          assoc('title', action.payload.Title),
-          assoc('year', action.payload.Year),
-          assoc('poster', action.payload.Poster),
-          assoc('id', cuid())
-        )({}), state)
-    default:
-      return state
-  }
-}
+const movies = (state=[], action) => state
 const movie = (state=defaultMovies()[0], action) => {
   switch (action.type) {
     case 'SET_MOVIE':
@@ -29,23 +16,23 @@ const movie = (state=defaultMovies()[0], action) => {
 
 const search = (state='', action) => {
   switch(action.type) {
-    case 'SET_SEARCH':
-      return action.payload
     default:
       return state
   }
 }
 
-const searchResults = (state=[], action) => {
-  switch(action.type) {
-    case 'SET_RESULTS':
-      return action.payload
-    default:
-      return state
-  }
-}
+const searchResults = (state=[], action) => state
 
 export default combineReducers({app, movies, movie, search, searchResults })
+
+function createMovie(movie) {
+  return compose(
+    assoc('title', movie.Title),
+    assoc('year', movie.Year),
+    assoc('poster', movie.Poster),
+    assoc('id', cuid())
+  )({})
+}
 
 function defaultMovies () {
   return [

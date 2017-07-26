@@ -16,6 +16,16 @@ const Search = props => {
         navLeft="/" iconLeft="chevron-left"
         title="Search"
       />
+      <form className="pa4" onSubmit={props.search}>
+        <TextField
+          value={props.query}
+          onChange={props.handleChange}
+          name="Search"
+          helpTxt="Enter a name of a movie and press ENTER"
+        />
+        <Button>Search</Button>
+      </form>
+      {map(m => <Card onClick={props.add(m, props.history)} key={m.id} {...m} />, props.results)}
     </section>
   )
 }

@@ -16,7 +16,7 @@ Or use glitch
 https://glitch.com/edit/#!/topflix?path=README.md:1:0
 ---
 
-Top flix is a react/redux tutorial that gives developers a way to practice building react/redux applications, this tutorial will go through the basics:
+Topflix is a react/redux tutorial that gives developers a way to practice building react/redux applications, this tutorial will go through the basics:
 
 * Why
 * JSX
@@ -361,90 +361,55 @@ test('get widgets and dispatch action', t => {
 
 ---
 
-Tutorial
+## Tutorial
 
-## Step 1 - List Movies (pages/index.js)
+In this tutorial we are going to work on reducers, reducers are used for state
+management in redux applications, we will build reducers to work with our application
+step by step.
 
-We are going to use a map function to list all the movies we have in our state.
-We are mapping our state to a prop called movies, when our component get called
-we can access this prop by using the `props.movies` variable. To render the list
-of movies, we will use a `List` Component as our wrapper and we will use a `ListItem`
-component for each movie item. Using the `{}` curley braces we can create an expression.
+### Step 1 - List Movies
 
-We will use the map function to transform the state list of movies from a list of
-objects into a list of `ListItems`
+In the reducers file, we need to change the default list of movies from an empty
+array to the following function call: `defaultMovies()`
 
-``` js
-<List className="avenir">
-  {map(m => <ListItem key={m.id}>{m.title}</ListItem>, props.movies)}
-</List>
-```
+### Step 2 - Controlled Component
 
-## Step 2 - Search Form (pages/search.js)
-
-Now that we have our movies listing, we need to create a search form, on the
-Search Page.
-
-``` js
-<form className="pa4">
-  <TextField
-    name="Search"
-    helpTxt="Enter a name of a movie and press ENTER"
-  />
-  <Button>Search</Button>
-</form>
-```
-
-Now that we have our search template, we need to turn the TextField into a controlled
-component. A controlled component is where we connect the component to our state by
-using the `value` prop and the `onChange` prop.
+In the reducers file, we need to find the search reducer and add a case for the
+'SET_SEARCH' action, this case will return the action.payload.
 
 ```
-<TextField
-  value={props.query}
-  onChange={props.handleChange}
-  name="Search"
-  helpTxt="Enter a name of a movie and press ENTER"
-/>
+case 'SET_SEARCH':
+  return action.payload
 ```
 
-Now that we added our value and onChange event we should be able to use the
-React Dev Tools to see it properly set the state of the query prop.
+### Step 3 - Set Results to State
 
-## Step 3 - Submitting our form (pages/search.js)
-
-Now that we have all the data we need to make our movie search request, we need
-to submit it.
+In the reducers file we need to set the search results to the redux state.
 
 ```
-<form className="pa4" onSubmit={props.search}>
-  ...
-</form>
+const searchResults = (state=[], action) => {
+  switch(action.type) {
+    case 'SET_RESULTS':
+      return action.payload
+    default:
+      return state
+  }
+}
 ```
 
-When a button in a from is clicked the form's onSubmit event is fired, we can
-handle this event using the onSubmit prop of the form component. We will assign
-it to our props.search action, you can see the logic in the `mapActionsToProps`
-function defined at the bottom of the search.js file.
+## Step 4 - Add Movie
 
-## Step 4 - Showing the Search Results
+In this step we want to add a case to the movies reducer to handle adding a movie
+item to the list. We convert the action payload to a valid movie item then append it
+to the list.
 
-Now that we have our search working, we need to show the results, just like
-we handled the list of movies, we want to render a list of movie results.
-
-This time we will list them using a Card Component.
-
-```js
-{map(m => <Card key={m.id} {...m} />, props.results)}
 ```
-
-## Step 5 - Handling the selection of a movie
-
-Now that we have the search results, when the movie is selected we need to add
-it to our main list, then navigate back to our list page.
-
-``` js
-{map(m => <Card onClick={props.add(m, props.history)} key={m.id} {...m} />, props.results)}
-````
-
-Congrats, you have finished the react tutorial! 
+const movies = (state=[], action) => {
+  switch (action.type) {
+    case 'ADD_MOVIE':
+      return append(createMovie(action.payload), state)
+    default:
+      return state
+  }
+}
+```
